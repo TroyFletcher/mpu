@@ -70,16 +70,21 @@
 	(mpu-line-read))))
 
 (defun mpu-reminder-processor (instruction)
-  (let ((stripped-content (split-string
-			   (cadr (split-string instruction "remind me to "))
-			   " at "))
-	(subject (car stripped-content))
+  (setq stripped-content (split-string
+			  (cadr (split-string instruction "remind me to "))
+			  " at "))
+  (let ((subject (car stripped-content))
 	(verbal-time (cadr stripped-content)))
     (if (file-exists-p mpu-agenda-filepath)
-	(progn
-	  (write-region (concat "* " subject "\n   SCHEDULED: " (mpu-verbal-time->org-mode-time verbal-time) "\n") nil mpu-agenda-filepath 'append)
-	  "Reminder processed. A thank you would be nice."
-	  )
+	(let ((org-mode-time (mpu-verbal-time->org-mode-time verbal-time)))
+	  (let ((weekday (cadr (split-string org-mode-time " ")))
+		(time (let (value)
+			(dolist (entry (cddr (reverse (cdr (split-string (caddr (split-string org-mode-time " ")) "")))) value)
+			  (setq value (concat entry value)))
+			value)))
+	    (write-region (concat "* " subject "\n   SCHEDULED: " org-mode-time "\n") nil mpu-agenda-filepath 'append)
+	    (concat "Reminder set for " weekday " at " time ". A thank you would be nice.")
+	    ))
       "ERROR: Cannot find file to write to!")))
 
 (defun mpu-verbal-timer->sleep-timer (verbal-time)
