@@ -63,6 +63,60 @@ The following shortcuts are available mode:
     )
   )
 
+(defun mpu-reminder-processor (instruction)
+  (let ((stripped-content (split-string
+			   (cadr (split-string instruction "remind me to "))
+			   " at "))
+	(subject (car stripped-content))
+	(verbal-time (cadr stripped-content)))
+    (write-region (concat "* " subject "\n   SCHEDULED: " (mpu-verbal-time->org-mode-time verbal-time) "\n") nil mpu-agenda-filepath 'append)
+    "Reminder processed. A thank you would be nice."
+    )
+  )
+
+(defun mpu-verbal-time->org-mode-time (verbal-time)
+  ;; figure it out lol
+  (setq decoded-time (decode-time (current-time)))
+  ;; idk why this won't work in the let below but w/e
+  (let ((seconds (nth 0 decoded-time))
+	(minutes (nth 1 decoded-time))
+	(hour (nth 2 decoded-time))
+	(day (nth 3 decoded-time))
+	(month (nth 4 decoded-time))
+	(year (nth 5 decoded-time)))
+    (if (string-match-p (regexp-quote ".m. ") verbal-time)
+	;; verbal time has a day
+	(let ((verbal-day (cadr (split-string verbal-time ".m. "))))
+	  (cond
+	   ((string-equal verbal-day "tomorrow") (setq day (1+ day))
+	    ))))
+    (if (string-match-p (regexp-quote " p.m.") verbal-time)
+	;; is pm
+	(let ((new-hour
+	       (string-to-number
+		(car (split-string (car (split-string verbal-time " p.m.")) ":"))))
+	      (new-minutes
+	       (string-to-number
+		(cadr (split-string (car (split-string verbal-time " p.m.")) ":")))))
+	  (setq hour (+ 12 new-hour))
+	  (setq minutes new-minutes)
+	  )
+      ;; it's am
+      (let ((new-hour
+	     (string-to-number
+	      (car (split-string (car (split-string verbal-time " a.m.")) ":"))))
+	    (new-minutes
+	     (string-to-number
+	      (cadr (split-string (car (split-string verbal-time " a.m.")) ":")))))
+	(setq hour new-hour)
+	(setq minutes new-minutes)
+	)
+      )
+    (format-time-string "<%Y-%m-%d %a %H:%M>" (encode-time seconds minutes hour day month year))
+    )
+  )
+;; (mpu-verbal-time->org-mode-time verbal-time)
+
 (defun mpu-line-read ()
   "read current line and evaluate it as an instruction"
   (interactive)
