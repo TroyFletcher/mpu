@@ -35,16 +35,14 @@
 (defun mpu-verbalize (response)
   "take response string and reply using requested method(s)"
   (insert (response))
-  (start-process "response" nil "espeak" (concat "\"" response "\""))
-  )
+  (start-process "response" nil "espeak" (concat "\"" response "\"")))
 
 (defun mpu-response-method (response)
   "take response string and reply using requested method(s)"
   (insert (concat "MPU> " response))
   (setq speed "175")
   (setq slow-speed "15")
-  (start-process "mpu espeak response process" nil "espeak" "-s" speed (concat "\"" response "\""))
-  )
+  (start-process "mpu espeak response process" nil "espeak" "-s" speed (concat "\"" response "\"")))
 
 (defun mpu-respond (instruction)
   "read current line and evaluate it as an instruction"
@@ -59,8 +57,7 @@
    ((string-equal (car (split-string instruction " ")) "remind")
     (mpu-reminder-processor instruction))
    ;; default response
-   (t "unknown instruction"))
-  )
+   (t "unknown instruction")))
 
 (defun mpu-check-complete-instruction()
   (interactive)
@@ -68,10 +65,7 @@
   (if (= -3 (skip-chars-backward " mq"))
       (progn
 	(delete-char 3)
-	(mpu-line-read)
-	)
-    )
-  )
+	(mpu-line-read))))
 
 (defun mpu-reminder-processor (instruction)
   (let ((stripped-content (split-string
@@ -80,9 +74,7 @@
 	(subject (car stripped-content))
 	(verbal-time (cadr stripped-content)))
     (write-region (concat "* " subject "\n   SCHEDULED: " (mpu-verbal-time->org-mode-time verbal-time) "\n") nil mpu-agenda-filepath 'append)
-    "Reminder processed. A thank you would be nice."
-    )
-  )
+    "Reminder processed. A thank you would be nice."))
 
 (defun mpu-verbal-time->org-mode-time (verbal-time)
   ;; figure it out lol
@@ -98,8 +90,8 @@
 	;; verbal time has a day
 	(let ((verbal-day (cadr (split-string verbal-time ".m. "))))
 	  (cond
-	   ((string-equal verbal-day "tomorrow") (setq day (1+ day))
-	    ))))
+	   ((string-equal verbal-day "tomorrow") (setq day (1+ day)))))
+      )
     (if (string-match-p (regexp-quote " p.m.") verbal-time)
 	;; is pm
 	(let ((new-hour
@@ -109,8 +101,7 @@
 	       (string-to-number
 		(cadr (split-string (car (split-string verbal-time " p.m.")) ":")))))
 	  (setq hour (+ 12 new-hour))
-	  (setq minutes new-minutes)
-	  )
+	  (setq minutes new-minutes))
       ;; it's am
       (let ((new-hour
 	     (string-to-number
@@ -119,13 +110,9 @@
 	     (string-to-number
 	      (cadr (split-string (car (split-string verbal-time " a.m.")) ":")))))
 	(setq hour new-hour)
-	(setq minutes new-minutes)
-	)
+	(setq minutes new-minutes))
       )
-    (format-time-string "<%Y-%m-%d %a %H:%M>" (encode-time seconds minutes hour day month year))
-    )
-  )
-;; (mpu-verbal-time->org-mode-time verbal-time)
+    (format-time-string "<%Y-%m-%d %a %H:%M>" (encode-time seconds minutes hour day month year))))
 
 (defun mpu-line-read ()
   "read current line and evaluate it as an instruction"
@@ -138,15 +125,13 @@
 	   (line-end-position)))))
   (newline)
   (mpu-response-method response)
-  (newline)
-  )
+  (newline))
 
 (defun mpu-line-abort ()
   "read current line and evaluate it as an instruction"
   (interactive)
   (self-insert-command 1)
-  (newline)
-  )
+  (newline))
 
 (defun mpu-random-joke ()
   "return a random one line joke. Don't read them for maximum effect"
@@ -282,5 +267,4 @@
 		    )))
     (nth
      (random (length joke-list))
-     joke-list))
-  )
+     joke-list)))
