@@ -1,21 +1,25 @@
 ;; MPU is your emacs voice assistant
-;; designed to work with speech to text on cell phone
+;; designed to work with speech to text on cell phone using termux
 ;; evaluates instructions on ' mq' such as:
 ;;   remind me to do to the store at 9am mq
 ;;   set a timer for 30 minutes mq
 ;; mpu-mode echos your instruction, then prints mpu's response
 ;; and optionally, reads the response back with espeak
+;; if speech to text gets confused, say comma to start a new line
 ;; REQUIRES: evil-mode (but easily avoided)
 
+;; define full file path to agenda org-mode file in your .emacs file
+;; (setq mpu-agenda-filepath "~/agenda.org")
+
 (define-minor-mode mpu-mode
-"provide mpu line instruction processing for buffer on full stop
-open a buffer, activate mpu-mode, type you query on blank line,
-and end with .
+  "provide mpu line instruction processing for buffer on full stop
+   open a buffer, activate mpu-mode, type you query on blank line,
+   and end with .
 
-The following shortcuts are available mode:
+   The following shortcuts are available mode:
 
-.             'mpu-line-read
-"
+   .             'mpu-line-read
+   "
   :lighter " MPU-mode "
   :keymap (let ((map (make-sparse-keymap)))
 	    ;; (keymap-set map "C-f" 'forward-char)
