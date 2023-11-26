@@ -123,13 +123,21 @@
 		(cadr (split-string (car (split-string verbal-time " a.m.")) ":")))))
 	  (setq hour new-hour)
 	  (setq minutes new-minutes)))
+    ;; it's a special verbal time description
     (if (string-match-p (regexp-quote "noon") verbal-time)
-	;; it's a special verbal time description
 	(progn (setq hour 12)
 	       (setq minutes 0)))
     (if (string-match-p (regexp-quote "tomorrow") verbal-time)
-	;; it's a special verbal time description
 	(setq day (1+ day)))
+    (if (and (string-match-p (regexp-quote " in ") verbal-time)
+	     (string-match-p (regexp-quote " days") verbal-time))
+	;; catches remind me to subject at time in X days
+	;; if result fails to convert number [such as "three") will return 0 (today)
+	;; this should warn, and try to convert word to number, but this depends on speech to text
+	(let ((days-in-future
+	      (string-to-number
+	       (car (split-string (cadr (split-string verbal-time " in ")) " ")))))
+	  (setq day (+ day days-in-future))))
     (format-time-string "<%Y-%m-%d %a %H:%M>" (encode-time seconds minutes hour day month year)))
   )
 
