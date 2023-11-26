@@ -77,7 +77,7 @@ The following shortcuts are available mode:
   )
 
 (defun mpu-random-joke ()
-  "read current line and evaluate it as an instruction"
+  "return a random one line joke. Don't read them for maximum effect"
   (let
       ((joke-list '(
 "I'm sceptical of anyone who tells me they do yoga every day, that's a bit of a stretch."
