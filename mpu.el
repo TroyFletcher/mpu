@@ -20,7 +20,7 @@ The following shortcuts are available mode:
   :keymap (let ((map (make-sparse-keymap)))
 	    ;; (keymap-set map "C-f" 'forward-char)
             ;; (define-key map (kbd ".") 'mpu-line-read)
-            ;; (define-key map (kbd ",") 'mpu-line-read)
+            (define-key map (kbd ",") 'mpu-line-abort)
             ;; (define-key map (kbd "?") 'mpu-line-read)
             (define-key map (kbd "q") 'mpu-check-complete-instruction)
             ;; (define-key map (kbd "m q") 'mpu-line-read)
@@ -72,12 +72,16 @@ The following shortcuts are available mode:
 	  (buffer-substring-no-properties
 	   (line-beginning-position)
 	   (line-end-position)))))
-  ;; (self-insert-command 1)
   (newline)
   (mpu-response-method response)
   (newline)
-  (evil-normal-state)
-  (evil-open-above 1)
+  )
+
+(defun mpu-line-abort ()
+  "read current line and evaluate it as an instruction"
+  (interactive)
+  (self-insert-command 1)
+  (newline)
   )
 
 (defun mpu-random-joke ()
