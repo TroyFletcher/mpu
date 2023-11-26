@@ -73,8 +73,12 @@
 			   " at "))
 	(subject (car stripped-content))
 	(verbal-time (cadr stripped-content)))
-    (write-region (concat "* " subject "\n   SCHEDULED: " (mpu-verbal-time->org-mode-time verbal-time) "\n") nil mpu-agenda-filepath 'append)
-    "Reminder processed. A thank you would be nice."))
+    (if (file-exists-p mpu-agenda-filepath)
+	(progn
+	  (write-region (concat "* " subject "\n   SCHEDULED: " (mpu-verbal-time->org-mode-time verbal-time) "\n") nil mpu-agenda-filepath 'append)
+	  "Reminder processed. A thank you would be nice."
+	  )
+      "ERROR: Cannot find file to write to!")))
 
 (defun mpu-verbal-time->org-mode-time (verbal-time)
   ;; figure it out lol
