@@ -16,7 +16,7 @@ The following shortcuts are available mode:
 
 .             'mpu-line-read
 "
-  :lighter " MPU-mode"
+  :lighter " MPU-mode "
   :keymap (let ((map (make-sparse-keymap)))
 	    ;; (keymap-set map "C-f" 'forward-char)
             ;; (define-key map (kbd ".") 'mpu-line-read)
