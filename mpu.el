@@ -32,6 +32,14 @@
 
 (provide 'mpu-mode)
 
+(defvar mpu-last-response "initial response value")
+
+(defun mpu-POST ()
+  "power on self test, check existence of required files, test connectivity"
+  ;; check agenda file
+  ;; check espeak
+  )
+
 (defun mpu-verbalize (response)
   "take response string and reply using requested method(s)"
   (insert (response))
@@ -58,6 +66,8 @@
     (mpu-reminder-processor instruction))
    ((string-match-p (regexp-quote "set timer") instruction)
     (mpu-timer-processor instruction))
+   ((string-match-p (regexp-quote "repeat") instruction)
+    mpu-last-response)
    ;; default response
    (t "unknown instruction")))
 
@@ -171,6 +181,7 @@
 	   (line-beginning-position)
 	   (line-end-position)))))
   (newline)
+  (setq mpu-last-response response)
   (mpu-response-method response)
   (newline))
 
