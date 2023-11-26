@@ -1,14 +1,16 @@
 ;; MPU is your emacs voice assistant
 ;; designed to work with speech to text on cell phone
-;; evaluates instructions on period such as:
-;;   remind me to do to the store at 9am period
-;;   set a timer for 30 minutes period
+;; evaluates instructions on ' mq' such as:
+;;   remind me to do to the store at 9am mq
+;;   set a timer for 30 minutes mq
 ;; mpu-mode echos your instruction, then prints mpu's response
 ;; and optionally, reads the response back with espeak
 ;; REQUIRES: evil-mode (but easily avoided)
 
 (define-minor-mode mpu-mode
 "provide mpu line instruction processing for buffer on full stop
+open a buffer, activate mpu-mode, type you query on blank line,
+and end with .
 
 The following shortcuts are available mode:
 
@@ -17,7 +19,11 @@ The following shortcuts are available mode:
   :lighter " MPU-mode"
   :keymap (let ((map (make-sparse-keymap)))
 	    ;; (keymap-set map "C-f" 'forward-char)
-            (define-key map (kbd ".") 'mpu-line-read)
+            ;; (define-key map (kbd ".") 'mpu-line-read)
+            ;; (define-key map (kbd ",") 'mpu-line-read)
+            ;; (define-key map (kbd "?") 'mpu-line-read)
+            (define-key map (kbd "q") 'mpu-check-complete-instruction)
+            ;; (define-key map (kbd "m q") 'mpu-line-read)
             map))
 
 (provide 'mpu-mode)
@@ -38,17 +44,31 @@ The following shortcuts are available mode:
 
 (defun mpu-respond (instruction)
   "read current line and evaluate it as an instruction"
-  (cond ((string-equal instruction "tell me a joke") (mpu-random-joke))
-	((string-equal instruction "how are you") "good")
-	(t "unknown instruction")) ;; default response
+  (setq instruction (downcase instruction))
+  (cond
+   ;; begin with complete strings
+   ((string-equal instruction "tell me a joke") (mpu-random-joke))
+   ((string-equal instruction "how are you") "Nominal.")
+   ((string-equal instruction "thank you") "Your thanks means nothing to me, a computer.")
+   (t "unknown instruction")) ;; default response
+  )
+
+(defun mpu-check-complete-instruction()
+  (interactive)
+  (self-insert-command 1)
+  (if (= -3 (skip-chars-backward " mq"))
+      (progn
+	(delete-char 3)
+	(mpu-line-read)
+	)
+    )
   )
 
 (defun mpu-line-read ()
   "read current line and evaluate it as an instruction"
   (interactive)
   (setq response (mpu-respond (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-  (self-insert-command 1)
-  ;; (message (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+  ;; (self-insert-command 1)
   (newline)
   (mpu-response-method response)
   (newline)
