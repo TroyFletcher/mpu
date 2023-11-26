@@ -44,7 +44,6 @@ The following shortcuts are available mode:
 
 (defun mpu-respond (instruction)
   "read current line and evaluate it as an instruction"
-  (setq instruction (downcase instruction))
   (cond
    ;; begin with complete strings
    ((string-equal instruction "tell me a joke") (mpu-random-joke))
@@ -67,7 +66,12 @@ The following shortcuts are available mode:
 (defun mpu-line-read ()
   "read current line and evaluate it as an instruction"
   (interactive)
-  (setq response (mpu-respond (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+  (setq response
+	(mpu-respond
+	 (downcase
+	  (buffer-substring-no-properties
+	   (line-beginning-position)
+	   (line-end-position)))))
   ;; (self-insert-command 1)
   (newline)
   (mpu-response-method response)
