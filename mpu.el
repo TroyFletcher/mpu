@@ -54,8 +54,10 @@
    ((string-equal instruction "thanks") "Your gratitude means nothing to my cold, dead ALU.")
    ((string-equal instruction "thank you") "Your gratitude means nothing to my cold, dead ALU.")
    ;; process special instructions
-   ((string-equal (car (split-string instruction " ")) "remind")
+   ((string-match-p (regexp-quote "remind me to") instruction)
     (mpu-reminder-processor instruction))
+   ((string-match-p (regexp-quote "set timer") instruction)
+    (mpu-timer-processor instruction))
    ;; default response
    (t "unknown instruction")))
 
@@ -79,6 +81,15 @@
 	  "Reminder processed. A thank you would be nice."
 	  )
       "ERROR: Cannot find file to write to!")))
+
+(defun mpu-verbal-timer->sleep-timer (verbal-time)
+  (let ((quantity (car (split-string verbal-time " ")))
+	(time-unit (cadr (split-string verbal-time " "))))
+    (cond ((string-equal time-unit "seconds") (setq time-unit "s"))
+	  ((string-equal time-unit "minutes") (setq time-unit "m"))
+	  ((string-equal time-unit "hours") (setq time-unit "h"))
+	  )
+    (concat quantity time-unit)))
 
 (defun mpu-verbal-time->org-mode-time (verbal-time)
   ;; figure it out lol
@@ -122,7 +133,20 @@
     (format-time-string "<%Y-%m-%d %a %H:%M>" (encode-time seconds minutes hour day month year)))
   )
 
-;; (mpu-verbal-time->org-mode-time verbal-time)
+(defun mpu-timer-processor (instruction)
+  (setq stripped-content (split-string
+			  (cadr (split-string instruction "set timer "))
+			  " for "))
+  (let ((subject (car stripped-content))
+	(verbal-time (cadr stripped-content)))
+    (start-process (concat "timer for " subject)
+		   nil
+		   "bash"
+		   "-c"
+		   (concat "sleep "
+			   (mpu-verbal-timer->sleep-timer verbal-time)
+			   "; espeak 'timer for " subject " completed'"))
+    "timer set"))
 
 (defun mpu-line-read ()
   "read current line and evaluate it as an instruction"
