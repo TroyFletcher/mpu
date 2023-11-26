@@ -51,9 +51,15 @@
   (cond
    ;; begin with complete strings
    ((string-equal instruction "tell me a joke") (mpu-random-joke))
+   ((string-equal instruction "tell me another joke") (mpu-random-joke))
    ((string-equal instruction "how are you") "Nominal.")
-   ((string-equal instruction "thank you") "Your thanks means nothing to me, a computer.")
-   (t "unknown instruction")) ;; default response
+   ((string-equal instruction "thanks") "Your gratitude means nothing to my cold, dead ALU.")
+   ((string-equal instruction "thank you") "Your gratitude means nothing to my cold, dead ALU.")
+   ;; process special instructions
+   ((string-equal (car (split-string instruction " ")) "remind")
+    (mpu-reminder-processor instruction))
+   ;; default response
+   (t "unknown instruction"))
   )
 
 (defun mpu-check-complete-instruction()
