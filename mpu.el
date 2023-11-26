@@ -90,12 +90,8 @@
 	(day (nth 3 decoded-time))
 	(month (nth 4 decoded-time))
 	(year (nth 5 decoded-time)))
-    (if (string-match-p (regexp-quote ".m. ") verbal-time)
-	;; verbal time has a day
-	(let ((verbal-day (cadr (split-string verbal-time ".m. "))))
-	  (cond
-	   ((string-equal verbal-day "tomorrow") (setq day (1+ day)))))
-      )
+    ;; adjust the time from present to future based on verbal description
+    ;; am and pm need to be calculated together so future times can (1+ day)
     (if (string-match-p (regexp-quote " p.m.") verbal-time)
 	;; is pm
 	(let ((new-hour
@@ -105,18 +101,28 @@
 	       (string-to-number
 		(cadr (split-string (car (split-string verbal-time " p.m.")) ":")))))
 	  (setq hour (+ 12 new-hour))
-	  (setq minutes new-minutes))
-      ;; it's am
-      (let ((new-hour
-	     (string-to-number
-	      (car (split-string (car (split-string verbal-time " a.m.")) ":"))))
-	    (new-minutes
-	     (string-to-number
-	      (cadr (split-string (car (split-string verbal-time " a.m.")) ":")))))
-	(setq hour new-hour)
-	(setq minutes new-minutes))
-      )
-    (format-time-string "<%Y-%m-%d %a %H:%M>" (encode-time seconds minutes hour day month year))))
+	  (setq minutes new-minutes)))
+    (if (string-match-p (regexp-quote " a.m.") verbal-time)
+	;; it's am
+	(let ((new-hour
+	       (string-to-number
+		(car (split-string (car (split-string verbal-time " a.m.")) ":"))))
+	      (new-minutes
+	       (string-to-number
+		(cadr (split-string (car (split-string verbal-time " a.m.")) ":")))))
+	  (setq hour new-hour)
+	  (setq minutes new-minutes)))
+    (if (string-match-p (regexp-quote "noon") verbal-time)
+	;; it's a special verbal time description
+	(progn (setq hour 12)
+	       (setq minutes 0)))
+    (if (string-match-p (regexp-quote "tomorrow") verbal-time)
+	;; it's a special verbal time description
+	(setq day (1+ day)))
+    (format-time-string "<%Y-%m-%d %a %H:%M>" (encode-time seconds minutes hour day month year)))
+  )
+
+;; (mpu-verbal-time->org-mode-time verbal-time)
 
 (defun mpu-line-read ()
   "read current line and evaluate it as an instruction"
