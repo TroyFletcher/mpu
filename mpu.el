@@ -86,7 +86,8 @@
   (let ((subject (car stripped-content))
 	(verbal-time (cadr stripped-content)))
     (if (file-exists-p mpu-agenda-filepath)
-	(let ((org-mode-time (mpu-verbal-time->org-mode-time verbal-time)))
+	(let ((org-mode-time (mpu-verbal-time->org-mode-time
+			      (mpu-standardize-verbal-time verbal-time))))
 	  (let ((weekday (cadr (split-string org-mode-time " ")))
 		(time (let (value)
 			(dolist (entry (cddr (reverse (cdr (split-string (caddr (split-string org-mode-time " ")) "")))) value)
@@ -185,10 +186,24 @@
   (mpu-response-method response)
   (newline))
 
+(defun mpu-standardize-verbal-time (verbal-time)
+  "standardize am/pm to time[space]a.m."
+  (if (string-match "[0-9]+[ap][\.]?m[\.]?" verbal-time) ;; needs space
+      (progn
+	(setq verbal-time (replace-regexp-in-string "p[\.]?m[\.]?" " p.m." verbal-time))
+	(setq verbal-time (replace-regexp-in-string "a[\.]?m[\.]?" " a.m." verbal-time))))
+  (if (string-match "[0-9]+ [ap][\.]?m[\.]?" verbal-time) ;; has space
+      (progn
+	(setq verbal-time(replace-regexp-in-string "p[\.]?m[\.]?" "p.m." verbal-time))
+	(setq verbal-time(replace-regexp-in-string "a[\.]?m[\.]?" "a.m." verbal-time))))
+  (if (string-match "^[0-9]+ [ap]" verbal-time) ;; time has single number then space
+      (setq verbal-time(replace-regexp-in-string "\\([0-9]+\\)" "\\1:00" verbal-time)))
+  )
+
 (defun mpu-line-abort ()
   "read current line and evaluate it as an instruction"
   (interactive)
-  (self-insert-command 1)
+  (self-insert-command 5 p.m. tomorrow)
   (newline))
 
 (defun mpu-random-joke ()
