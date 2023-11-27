@@ -11,6 +11,16 @@
 ;; define full file path to agenda org-mode file in your .emacs file
 ;; (setq mpu-agenda-filepath "~/agenda.org")
 
+;; define your task list in your .emacs file
+;; (setq mpu-tasks-list '("Do pushups"
+;; 		       "Work on tickets"
+;; 		       "Check voice mails"
+;; 		       "Work on emails"
+;; 		       "Read your book"
+;; 		       "Work on your projects"
+;; 		       "Take a walk"
+;; 		       ))
+
 (define-minor-mode mpu-mode
   "provide mpu line instruction processing for buffer on full stop
    open a buffer, activate mpu-mode, type you query on blank line,
@@ -61,6 +71,8 @@
    ((string-equal instruction "how are you") "Nominal.")
    ((string-equal instruction "thanks") "Your gratitude means nothing to my cold, dead ALU.")
    ((string-equal instruction "thank you") "Your gratitude means nothing to my cold, dead ALU.")
+   ((string-equal instruction "what should i do") (mpu-task-picker mpu-tasks-list))
+   ((string-equal instruction "what do") (mpu-task-picker mpu-tasks-list))
    ;; process special instructions
    ((string-match-p (regexp-quote "remind me to") instruction)
     (mpu-reminder-processor instruction))
@@ -171,6 +183,13 @@
 			   (mpu-verbal-timer->sleep-timer verbal-time)
 			   "; espeak 'timer for " subject " completed'"))
     "timer set"))
+
+(defun mpu-task-picker (tasks)
+  (let ((times '("5" "10" "15" "20" "25" "30"))
+	(count 20)) ;; general item count
+    (concat (nth (random (length tasks)) tasks) " for "
+	    (nth (random (length times)) times) " minutes starting with item "
+	    (format "%s" (1+ (random count))))))
 
 (defun mpu-line-read ()
   "read current line and evaluate it as an instruction"
