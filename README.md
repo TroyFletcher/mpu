@@ -1,5 +1,5 @@
 # MPU
-![mpu self portrait 1817 colorized](https://github.com/TroyFletcher/mpu/raw/master/mpu.jpg)
+![mpu self portrait 1817 colorized](https://raw.githubusercontent.com/TroyFletcher/mpu/main/mpu.jpg)
 ## mpu catches reminders, sets timers, and tells one-liners
 
 ## What is MPU?
