@@ -218,6 +218,7 @@
 	(setq verbal-time(replace-regexp-in-string "a[\.]?m[\.]?" "a.m." verbal-time))))
   (if (string-match "^[0-9]+ [ap]" verbal-time) ;; time has single number then space
       (setq verbal-time(replace-regexp-in-string "\\([0-9]+\\)" "\\1:00" verbal-time)))
+  verbal-time
   )
 
 (defun mpu-line-abort ()
