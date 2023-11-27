@@ -85,11 +85,12 @@
 
 (defun mpu-check-complete-instruction()
   (interactive)
-  (self-insert-command 1)
-  (if (= -3 (skip-chars-backward " mq"))
+  (if (and (eq ?m (char-before (point))) ;; previous characetr is m
+	   (eq ?\  (char-before (1- (point))))) ;; previous characetr is space
       (progn
-	(delete-char 3)
-	(mpu-line-read))))
+	(backward-delete-char 2)
+	(mpu-line-read))
+    (self-insert-command 1)))
 
 (defun mpu-reminder-processor (instruction)
   (setq stripped-content (split-string
