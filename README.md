@@ -41,3 +41,11 @@ _note the suffix is erased as it is typed and will not appear in the final outpu
 - Track task completion
 - Respond with additional info about background processes (IE: Timer X has 8 minutes left, task Y is incomplete, scheduled item is coming up)
 - Track responses and inquiries so you can clarify or add missing elements
+
+## TODO
+- Remind/interrupt desk health, standing, gazing, water
+- Create agenda notes with tags for location/context (IE: What are my notes tagged library?)
+- Play/select (by age of listening/rateing/time/context) music
+- Pomodoros
+- Nethack style full moon warning
+- Client/Server architecture via ssh/web services
