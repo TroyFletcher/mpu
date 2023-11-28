@@ -24,7 +24,7 @@
 (define-minor-mode mpu-mode
   "provide mpu line instruction processing for buffer on full stop
    open a buffer, activate mpu-mode, type you query on blank line,
-   and end with .
+   and end with: SPC m q
 
    The following shortcuts are available mode:
 
