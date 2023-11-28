@@ -171,11 +171,13 @@
   )
 
 (defun mpu-timer-processor (instruction)
-  (setq stripped-content (split-string
+  (let ((stripped-content (split-string
 			  (cadr (split-string instruction "set timer "))
-			  " for "))
+			  " for ")))
   (let ((subject (car stripped-content))
-	(verbal-time (cadr stripped-content)))
+	(verbal-time (cadr stripped-content))
+	(minutes (number-to-string (nth 1 (decode-time (current-time)))))
+	(hour (number-to-string (nth 2 (decode-time (current-time))))))
     (start-process (concat "timer for " subject)
 		   nil
 		   "bash"
@@ -183,7 +185,7 @@
 		   (concat "sleep "
 			   (mpu-verbal-timer->sleep-timer verbal-time)
 			   "; espeak 'timer for " subject " completed'"))
-    "timer set"))
+    (concat "timer set at " hour ":" minutes))))
 
 (defun mpu-task-picker (tasks)
   (let ((times '("5" "10" "15" "20" "25" "30"))
