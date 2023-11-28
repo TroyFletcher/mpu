@@ -73,6 +73,7 @@
    ((string-equal instruction "thank you") "Your gratitude means nothing to my cold, dead ALU.")
    ((string-equal instruction "what should i do") (mpu-task-picker mpu-tasks-list))
    ((string-equal instruction "what do") (mpu-task-picker mpu-tasks-list))
+   ((string-equal instruction "pomodoro start") (mpu-pomodoro-process))
    ;; process special instructions
    ((string-match-p (regexp-quote "remind me to") instruction)
     (mpu-reminder-processor instruction))
@@ -222,6 +223,27 @@
       (setq verbal-time(replace-regexp-in-string "\\([0-9]+\\)" "\\1:00" verbal-time)))
   verbal-time
   )
+
+(defun mpu-pomodoro-process ()
+  (start-process
+   (concat "pomodoro timer")
+   nil
+   "bash"
+   "-c"
+   (concat 
+    "espeak 'starting pomodoro timer in 3. 2. 1. pomodoro!';"
+    "sleep 10m;"
+    "espeak 'pomodoro 15 minute warning!';"
+    "sleep 10m;"
+    "espeak 'pomodoro 5 minute warning!';"
+    "sleep 4m;"
+    "espeak 'pomodoro 1 minute sprint!';"
+    "sleep 1m;"
+    "espeak 'Pomodoro timer expired! Break time!';"
+    "sleep 5m;"
+    "espeak 'break time is over! Start a new Pomodoro!'"
+    ))
+  "Starting a pomodoro timer for you!")
 
 (defun mpu-line-abort ()
   "read current line and evaluate it as an instruction"
