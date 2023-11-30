@@ -49,3 +49,7 @@ _note the suffix is erased as it is typed and will not appear in the final outpu
 - Pomodoros
 - Nethack style full moon warning
 - Client/Server architecture via ssh/web services
+- Put previous instruction into kill ring/M-p to reprint
+- Give verse
+- Shorthand for typing instructions (IE: remind me to = rmt)
+- Use a location schedule for day/time context to make better task suggestions
