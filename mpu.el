@@ -74,13 +74,13 @@
    ((string-equal instruction "what should i do") (mpu-task-picker mpu-tasks-list))
    ((string-equal instruction "what do") (mpu-task-picker mpu-tasks-list))
    ((string-equal instruction "pomodoro start") (mpu-pomodoro-process))
+   ((string-equal instruction "repeat") mpu-last-response)
    ;; process special instructions
-   ((string-match-p (regexp-quote "remind me to") instruction)
+   ((or (string-match "remind me to" instruction)
+	(string-match "^rmt .+$" instruction))
     (mpu-reminder-processor instruction))
-   ((string-match-p (regexp-quote "set timer") instruction)
+   ((string-match "set timer" instruction)
     (mpu-timer-processor instruction))
-   ((string-match-p (regexp-quote "repeat") instruction)
-    mpu-last-response)
    ;; default response
    (t "unknown instruction")))
 
@@ -94,9 +94,14 @@
     (self-insert-command 1)))
 
 (defun mpu-reminder-processor (instruction)
-  (setq stripped-content (split-string
-			  (cadr (split-string instruction "remind me to "))
-			  " at "))
+  (if (string-match "^rmt .+$" instruction)
+      (setq stripped-content (split-string
+			      (cadr (split-string instruction "rmt "))
+			      " at "))
+    (setq stripped-content (split-string
+			    (cadr (split-string instruction "remind me to "))
+			    " at "))
+    )
   (let ((subject (car stripped-content))
 	(verbal-time (cadr stripped-content)))
     (if (file-exists-p mpu-agenda-filepath)
