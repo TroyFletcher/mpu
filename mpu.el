@@ -66,13 +66,16 @@
   "read current line and evaluate it as an instruction"
   (cond
    ;; begin with complete strings
-   ((string-equal instruction "tell me a joke") (mpu-random-joke))
-   ((string-equal instruction "tell me another joke") (mpu-random-joke))
+   ((or (string-equal instruction "tell me a joke")
+	(string-equal instruction "tell me another joke"))
+    (mpu-random-joke))
    ((string-equal instruction "how are you") "Nominal.")
-   ((string-equal instruction "thanks") "Your gratitude means nothing to my cold, dead ALU.")
-   ((string-equal instruction "thank you") "Your gratitude means nothing to my cold, dead ALU.")
-   ((string-equal instruction "what should i do") (mpu-task-picker mpu-tasks-list))
-   ((string-equal instruction "what do") (mpu-task-picker mpu-tasks-list))
+   ((or (string-equal instruction "thanks")
+	(string-equal instruction "thank you"))
+    "Your gratitude means nothing to my cold, dead ALU.")
+   ((or (string-equal instruction "what should i do")
+	(string-equal instruction "what do"))
+    (mpu-task-picker mpu-tasks-list))
    ((string-equal instruction "pomodoro start") (mpu-pomodoro-process))
    ((string-equal instruction "repeat") mpu-last-response)
    ;; process special instructions
