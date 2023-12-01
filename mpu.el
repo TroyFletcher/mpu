@@ -82,6 +82,8 @@
    ((or (string-match "remind me to" instruction)
 	(string-match "^rmt .+$" instruction))
     (mpu-reminder-processor instruction))
+   ((string-match "^to do .+$" instruction)
+    (mpu-todo-processor instruction))
    ((string-match "set timer" instruction)
     (mpu-timer-processor instruction))
    ;; default response
@@ -118,6 +120,14 @@
 	    (write-region (concat "* " subject "\n   SCHEDULED: " org-mode-time "\n") nil mpu-agenda-filepath 'append)
 	    (concat "Reminder set for " weekday " at " time ". A thank you would be nice.")
 	    ))
+      "ERROR: Cannot find file to write to!")))
+
+(defun mpu-todo-processor (instruction)
+  (let ((subject (cadr (split-string instruction "to do "))))
+    (if (file-exists-p mpu-agenda-filepath)
+	(progn
+	  (write-region (concat "* TODO " subject "\n") nil mpu-agenda-filepath 'append)
+	  (concat "Wrote todo item " subject ))
       "ERROR: Cannot find file to write to!")))
 
 (defun mpu-verbal-timer->sleep-timer (verbal-time)
