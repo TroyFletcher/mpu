@@ -110,6 +110,8 @@
     )
   (let ((subject (car stripped-content))
 	(verbal-time (cadr stripped-content)))
+    (setq subject (replace-regexp-in-string " today" "" subject))
+    (setq verbal-time (replace-regexp-in-string " today" "" verbal-time))
     (if (file-exists-p mpu-agenda-filepath)
 	(let ((org-mode-time (mpu-verbal-time->org-mode-time
 			      (mpu-standardize-verbal-time verbal-time))))
