@@ -34,6 +34,7 @@ _note the suffix is erased as it is typed and will not appear in the final outpu
 - Pick an activity, duration, and start number for you
 - Set a timer (currently simple process sleep followed by espeak)
 - Tell you a joke
+- Simple Pomodoros
 
 ## What WILL MPU do in the future?
 - Interrupt you to keep you on task
@@ -43,14 +44,14 @@ _note the suffix is erased as it is typed and will not appear in the final outpu
 - Track responses and inquiries so you can clarify or add missing elements
 
 ## TODO
-- Remind/interrupt desk health, standing, gazing, water
+- Remind/interrupt desk health, standing, eye strain relief, water
 - Create agenda notes with tags for location/context (IE: What are my notes tagged library?)
 - Play/select (by age of listening/rateing/time/context) music
-- Pomodoros
 - Nethack style full moon warning
 - Client/Server architecture via ssh/web services
 - Put previous instruction into kill ring/M-p to reprint
 - Give verse
-- Shorthand for typing instructions (IE: remind me to = rmt)
 - Use a location schedule for day/time context to make better task suggestions
 - headache suggestions?
+- optimize textual input with more shorthand
+- create timer process for requested, but uninitiated contact. Possibly via alternative means such as SMS
