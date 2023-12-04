@@ -126,12 +126,14 @@
       "ERROR: Cannot find file to write to!")))
 
 (defun mpu-todo-processor (instruction)
-  (let ((subject (cadr (split-string instruction "to do "))))
-    (if (file-exists-p mpu-agenda-filepath)
-	(progn
-	  (write-region (concat "* TODO " subject "\n") nil mpu-agenda-filepath 'append)
-	  (concat "Wrote todo item " subject ))
-      "ERROR: Cannot find file to write to!")))
+  (if (string-match "^td .+$" instruction)
+      (setq subject (cadr (split-string instruction "^td ")))
+    (setq subject (cadr (split-string instruction "^to do "))))
+  (if (file-exists-p mpu-agenda-filepath)
+      (progn
+	(write-region (concat "* TODO " subject "\n") nil mpu-agenda-filepath 'append)
+	(concat "Wrote todo item " subject ))
+    "ERROR: Cannot find file to write to!"))
 
 (defun mpu-verbal-timer->sleep-timer (verbal-time)
   (let ((quantity (car (split-string verbal-time " ")))
