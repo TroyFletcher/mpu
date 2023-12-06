@@ -87,6 +87,8 @@
     (mpu-todo-processor instruction))
    ((string-match "set timer" instruction)
     (mpu-timer-processor instruction))
+   ((string-match "^log .+$" instruction)
+    (mpu-log-processor instruction))
    ;; default response
    (t "unknown instruction")))
 
@@ -134,6 +136,16 @@
 	(write-region (concat "* TODO " subject "\n") nil mpu-agenda-filepath 'append)
 	(concat "Wrote todo item " subject ))
     "ERROR: Cannot find file to write to!"))
+
+(defun mpu-log-processor (instruction)
+  (let ((split-content (split-string
+			(cadr (split-string instruction "^log "))
+			" tag ")))
+    (if (file-exists-p mpu-agenda-filepath)
+	(progn
+	  (write-region (concat "* " (car split-content) " :" (cadr split-content) ":\n") nil mpu-agenda-filepath 'append)
+	  (concat "Wrote log item " (car split-content) " tagged " (cadr split-content)))
+      "ERROR: Cannot find file to write to!")))
 
 (defun mpu-verbal-timer->sleep-timer (verbal-time)
   (let ((quantity (car (split-string verbal-time " ")))
