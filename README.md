@@ -55,3 +55,5 @@ _note the suffix is erased as it is typed and will not appear in the final outpu
 - headache suggestions?
 - optimize textual input with more shorthand
 - create timer process for requested, but uninitiated contact. Possibly via alternative means such as SMS
+- add "in X hours" calculation
+- add multiple tag detect on log entry
