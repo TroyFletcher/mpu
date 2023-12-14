@@ -43,9 +43,18 @@
 (provide 'mpu-mode)
 
 (defvar mpu-last-response "initial response value")
+(defvar mpu-weekdays '(("sunday" . 0)
+		       ("monday" . 1)
+		       ("tuesday" . 2)
+		       ("wednesday" . 3)
+		       ("thursday" . 4)
+		       ("friday" . 5)
+		       ("saturday" . 6)
+		       ))
 
 (defun mpu-POST ()
   "power on self test, check existence of required files, test connectivity"
+  ;; check variable definitions; mpu-tasks-list, mpu-agenda-filepath
   ;; check agenda file
   ;; check espeak
   )
@@ -165,9 +174,12 @@
 	(hour (nth 2 decoded-time))
 	(day (nth 3 decoded-time))
 	(month (nth 4 decoded-time))
-	(year (nth 5 decoded-time)))
+	(year (nth 5 decoded-time))
+	(weekday (nth 6 decoded-time)))
     ;; adjust the time from present to future based on verbal description
     ;; am and pm need to be calculated together so future times can (1+ day)
+    ;; TODO add support for no time specified "remind me to X in 3 days" = default time
+    ;; TODO add support for day specified as weekday  "remind me to X at 9:00 a.m. on tuesday"
     (if (string-match-p (regexp-quote " p.m.") verbal-time)
 	;; is pm
 	(let ((new-hour
@@ -194,6 +206,15 @@
 	       (setq minutes 0)))
     (if (string-match-p (regexp-quote "tomorrow") verbal-time)
 	(setq day (1+ day)))
+    (if (string-match-p (regexp-quote " on ") verbal-time)
+	(let ((days-in-future
+	       (mod
+		(-
+		 (cdr (assoc
+		       (cadr (split-string verbal-time " on "))
+		       mpu-weekdays))
+		 weekday) 7)))
+	  (setq day (+ day days-in-future))))
     (if (and (string-match-p (regexp-quote " in ") verbal-time)
 	     (string-match-p (regexp-quote " days") verbal-time))
 	;; catches remind me to subject at time in X days
