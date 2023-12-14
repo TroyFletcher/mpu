@@ -26,6 +26,10 @@ _Abort a line by typing comma `,`_
 > thank you mq
 > 
 > > MPU> Your gratitude means nothing to my cold, dead ALU.
+>
+> rmt potluck at noon on wednesday mq
+>
+> > MPU> Reminder set for Wed at 12:00. A thank you would be nice.
 
 _note the suffix is erased as it is typed and will not appear in the final output_
 
