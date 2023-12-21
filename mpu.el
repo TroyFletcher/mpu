@@ -43,6 +43,7 @@
 (provide 'mpu-mode)
 
 (defvar mpu-last-response "initial response value")
+(defvar mpu-tonight-time " at 9pm")
 (defvar mpu-weekdays '(("sunday" . 0)
 		       ("monday" . 1)
 		       ("tuesday" . 2)
@@ -111,6 +112,10 @@
     (self-insert-command 1)))
 
 (defun mpu-reminder-processor (instruction)
+  ;; expansion processing for keywords
+  (if (string-match "^.+ tonight$" instruction)
+      ;; TODO this might need a check; "at 9pm tonight" makes "at 9pm at 9pm"
+     (setq instruction (replace-regexp-in-string " tonight$" mpu-tonight-time instruction)))
   (if (string-match "^rmt .+$" instruction)
       (setq stripped-content (split-string
 			      (cadr (split-string instruction "rmt "))
