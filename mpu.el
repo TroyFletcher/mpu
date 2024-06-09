@@ -273,6 +273,7 @@
 (defun mpu-standardize-verbal-time (verbal-time)
   "standardize am/pm to time[space]a.m."
   (if (string-match "[0-9]+[ap][\.]?m[\.]?" verbal-time) ;; needs space
+      ;; TODO clean this up with a regexp match which backtraces ignorant of space
       (progn
 	(setq verbal-time (replace-regexp-in-string "p[\.]?m[\.]?" " p.m." verbal-time))
 	(setq verbal-time (replace-regexp-in-string "a[\.]?m[\.]?" " a.m." verbal-time))))

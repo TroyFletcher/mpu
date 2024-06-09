@@ -61,3 +61,7 @@ _note the suffix is erased as it is typed and will not appear in the final outpu
 - create timer process for requested, but uninitiated contact. Possibly via alternative means such as SMS
 - add "in X hours" calculation
 - add multiple tag detect on log entry
+- Make MPU interruptive with espeak and background processes
+  - Push reminders, espeaking agenda reminders
+  - Possibly by external scheduled runs of lisp functions via server interface.
+  - emacsclient --eval "(mpu-respond \"remind me to call your mom at 2pm\")"
